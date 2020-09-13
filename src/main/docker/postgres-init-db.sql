@@ -1,0 +1,1 @@
+create table people (id UUID PRIMARY KEY, name varchar not null, age integer not null);

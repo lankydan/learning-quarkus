@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  app:
+    build:
+      # Context set back to the project's root directory to allow docker to find the files in the
+      # [target] directory, needed to create the quarkus app container. Not doing so can lead to
+      # source not found or permission issues trying to access the files.
+      context: ../../../
+      dockerfile: src/main/docker/Dockerfile.jvm
+    ports:
+      - "8080:8080"
+  postgres:
+    image: postgres
+    volumes:
+      - ./postgres-init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: mytestdb
