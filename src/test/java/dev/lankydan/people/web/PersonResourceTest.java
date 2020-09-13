@@ -1,4 +1,4 @@
-package dev.lankydan.web;
+package dev.lankydan.people.web;
 
 import dev.lankydan.people.model.Person;
 import io.quarkus.test.junit.QuarkusTest;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
