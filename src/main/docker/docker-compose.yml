@@ -1,3 +1,17 @@
+####
+# This docker-compose file builds a container that runs the Quarkus application in JVM mode as well as the accompanying postgres
+# container used by the application.
+#
+# Before building the container image run:
+#
+# mvn package
+#
+# To build and run the network run:
+#
+# docker-compose -f src/main/docker/docker-compose.yml up
+#
+###
+
 version: "3.8"
 services:
   app:
