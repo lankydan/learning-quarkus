@@ -48,7 +48,7 @@ public class PersonResource {
   @Produces(MediaType.APPLICATION_JSON)
   public Person put(@PathParam("id") UUID id, Person person) {
     if (personRepository.findById(id) == null) {
-      throw new RuntimeException("does not exist");
+      throw new PersonNotFoundException(id);
     }
     return personRepository.update(new Person(id, person.getName(), person.getAge()));
   }
@@ -58,7 +58,7 @@ public class PersonResource {
   @Produces(MediaType.APPLICATION_JSON)
   public void delete(@PathParam("id") UUID id) {
     if (personRepository.findById(id) == null) {
-      throw new RuntimeException("does not exist");
+      throw new PersonNotFoundException(id);
     }
     personRepository.deleteById(id);
   }

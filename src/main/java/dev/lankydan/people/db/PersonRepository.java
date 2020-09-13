@@ -1,14 +1,14 @@
 package dev.lankydan.people.db;
 
+import dev.lankydan.core.db.PersistenceException;
 import dev.lankydan.people.model.Person;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Default;
-import javax.inject.Inject;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -17,11 +17,11 @@ import java.util.UUID;
 // @Singleton
 public class PersonRepository {
 
-  private static final String FIND_ALL = "select * from people";
-  private static final String FIND_ALL_BY_ID = "select * from people where id = ?";
-  private static final String INSERT = "insert into people (id, name, age) values (?, ?, ?)";
-  private static final String UPDATE = "update people set name = ?, age = ? where id = ?";
-  private static final String DELETE = "delete from people where id = ?";
+  private static final String FIND_ALL = "SELECT * FROM people";
+  private static final String FIND_ALL_BY_ID = "SELECT * FROM people WHERE id = ?";
+  private static final String INSERT = "INSERT INTO people (id, name, age) VALUES (?, ?, ?)";
+  private static final String UPDATE = "UPDATE people SET name = ?, age = ? WHERE id = ?";
+  private static final String DELETE = "DELETE FROM people WHERE id = ?";
 
   private final DataSource dataSource;
 
@@ -41,8 +41,8 @@ public class PersonRepository {
                 resultSet.getString("name"),
                 resultSet.getInt("age")));
       }
-    } catch (Exception e) {
-      throw new RuntimeException("boom", e.getCause());
+    } catch (SQLException e) {
+      throw new PersistenceException("boom", e.getCause());
     }
     return result;
   }
@@ -57,36 +57,36 @@ public class PersonRepository {
               UUID.fromString(resultSet.getString("id")),
               resultSet.getString("name"),
               resultSet.getInt("age"));
-          }
         }
-    } catch (Exception e) {
-      throw new RuntimeException("boom", e.getCause());
+      }
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return null;
   }
 
   public Person insert(Person person) {
     try (Connection connection = dataSource.getConnection();
-         PreparedStatement statement = connection.prepareStatement(INSERT)) {
+        PreparedStatement statement = connection.prepareStatement(INSERT)) {
       statement.setObject(1, person.getId());
       statement.setString(2, person.getName());
-      statement.setInt(3,person.getAge());
+      statement.setInt(3, person.getAge());
       statement.executeUpdate();
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage(), e.getCause());
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return person;
   }
 
   public Person update(Person person) {
     try (Connection connection = dataSource.getConnection();
-         PreparedStatement statement = connection.prepareStatement(UPDATE)) {
+        PreparedStatement statement = connection.prepareStatement(UPDATE)) {
       statement.setString(1, person.getName());
-      statement.setInt(2,person.getAge());
+      statement.setInt(2, person.getAge());
       statement.setObject(3, person.getId());
       statement.executeUpdate();
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage(), e.getCause());
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
     return person;
   }
@@ -96,8 +96,8 @@ public class PersonRepository {
         PreparedStatement statement = connection.prepareStatement(DELETE)) {
       statement.setObject(1, id);
       return statement.executeUpdate() == 1;
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage(), e.getCause());
+    } catch (SQLException e) {
+      throw new PersistenceException(e);
     }
   }
 }
