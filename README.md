@@ -11,6 +11,8 @@ You can run your application in dev mode that enables live coding using:
 ./mvnw quarkus:dev
 ```
 
+> You will need to edit the `application.properties` to look for a postgres instance running on localhost
+
 ## Packaging and running the application
 
 The application can be packaged using `./mvnw package`.
